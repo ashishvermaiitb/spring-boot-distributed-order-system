@@ -1,4 +1,3 @@
-// customer-service/src/main/java/com/orderfulfillment/customerservice/mapper/CustomerMapper.java
 package com.orderfulfillment.customerservice.mapper;
 
 import com.orderfulfillment.customerservice.dto.CustomerRequestDto;
