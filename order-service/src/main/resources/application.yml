@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: order-service
+  profiles:
+    active: local
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+
+# External service configuration
+external-services:
+  customer-service:
+    base-url: http://localhost:8081
+    timeout: 5000
+    max-retries: 3
+  payment-service:
+    base-url: http://localhost:8082
+    timeout: 5000
+    max-retries: 3
+
+# Circuit breaker thresholds
+circuit-breaker:
+  payment-service:
+    failure-threshold: 5
+    time-window: 60 # seconds
+
+logging:
+  level:
+    com.orderfulfillment.orderservice: DEBUG
+    org.springframework.web: DEBUG
