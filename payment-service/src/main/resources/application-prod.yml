@@ -1,0 +1,45 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:paymentdb}
+    driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:password}
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: ${DATABASE_PLATFORM:org.hibernate.dialect.H2Dialect}
+
+server:
+  port: ${PORT:8082}
+
+external-services:
+  order-service:
+    base-url: ${ORDER_SERVICE_URL:http://localhost:8080}
+    timeout: 10000
+
+payment:
+  processing:
+    scheduled-delay: 30000 # 30 seconds for demo
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      order-service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+
+logging:
+  level:
+    com.orderfulfillment.paymentservice: INFO
+    org.springframework.web: WARN
