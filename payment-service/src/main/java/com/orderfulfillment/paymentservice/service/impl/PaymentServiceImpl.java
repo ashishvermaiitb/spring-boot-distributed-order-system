@@ -1,5 +1,6 @@
 package com.orderfulfillment.paymentservice.service.impl;
 
+import com.orderfulfillment.paymentservice.client.OrderServiceClient;
 import com.orderfulfillment.paymentservice.dto.PaymentRequestDto;
 import com.orderfulfillment.paymentservice.dto.PaymentResponseDto;
 import com.orderfulfillment.paymentservice.entity.Payment;
@@ -27,11 +28,15 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final OrderServiceClient orderServiceClient;
 
     @Autowired
-    public PaymentServiceImpl(PaymentRepository paymentRepository, PaymentMapper paymentMapper) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository,
+                              PaymentMapper paymentMapper,
+                              OrderServiceClient orderServiceClient) {
         this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
+        this.orderServiceClient = orderServiceClient;
     }
 
     @Override
@@ -142,6 +147,13 @@ public class PaymentServiceImpl implements PaymentService {
             // Simulate payment processing (90% success rate for demo)
             boolean paymentSuccessful = Math.random() > 0.1;
 
+            // Notify order service based on payment result
+            if (paymentSuccessful) {
+                notifyOrderServiceOfCompletion(payment);
+            } else {
+                notifyOrderServiceOfFailure(payment);
+            }
+
             if (paymentSuccessful) {
                 String transactionId = "TXN-" + UUID.randomUUID().toString().substring(0, 8);
                 payment.markAsCompleted(transactionId);
@@ -164,5 +176,24 @@ public class PaymentServiceImpl implements PaymentService {
                         payment.getId(), saveException);
             }
         }
+    }
+
+    private void notifyOrderServiceOfCompletion(Payment payment) {
+        orderServiceClient.updateOrderStatusToCompleted(payment.getOrderId(), payment.getId())
+                .doOnSuccess(result -> logger.info("Successfully notified order service of payment completion for order: {}",
+                        payment.getOrderId()))
+                .doOnError(error -> logger.error("Failed to notify order service of payment completion for order: {}",
+                        payment.getOrderId(), error))
+                .subscribe();
+    }
+
+    private void notifyOrderServiceOfFailure(Payment payment) {
+        String reason = "Payment failed: " + payment.getFailureReason();
+        orderServiceClient.cancelOrder(payment.getOrderId(), reason)
+                .doOnSuccess(result -> logger.info("Successfully notified order service of payment failure for order: {}",
+                        payment.getOrderId()))
+                .doOnError(error -> logger.error("Failed to notify order service of payment failure for order: {}",
+                        payment.getOrderId(), error))
+                .subscribe();
     }
 }

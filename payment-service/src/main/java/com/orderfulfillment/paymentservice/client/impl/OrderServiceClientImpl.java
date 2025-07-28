@@ -45,7 +45,7 @@ public class OrderServiceClientImpl implements OrderServiceClient {
                 .uri("/api/v1/orders/{orderId}/status", orderId)
                 .bodyValue(requestBody)
                 .retrieve()
-                .onStatus(HttpStatus::isError, response -> {
+                .onStatus(status -> status.isError(), response -> {
                     logger.error("Error updating order status: {}", response.statusCode());
                     return Mono.error(new OrderServiceException(
                             "Failed to update order status: " + response.statusCode()));
@@ -72,7 +72,7 @@ public class OrderServiceClientImpl implements OrderServiceClient {
                 .uri("/api/v1/orders/{orderId}/cancel", orderId)
                 .bodyValue(requestBody)
                 .retrieve()
-                .onStatus(HttpStatus::isError, response -> {
+                .onStatus(status -> status.isError(), response -> {
                     logger.error("Error cancelling order: {}", response.statusCode());
                     return Mono.error(new OrderServiceException(
                             "Failed to cancel order: " + response.statusCode()));
