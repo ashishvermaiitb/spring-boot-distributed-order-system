@@ -43,3 +43,5 @@ logging:
   level:
     com.orderfulfillment.paymentservice: INFO
     org.springframework.web: WARN
+    org.springframework.boot.web: INFO
+    org.springframework.boot.web.embedded.tomcat: INFO
