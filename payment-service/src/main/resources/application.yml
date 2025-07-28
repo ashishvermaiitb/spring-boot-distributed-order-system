@@ -1,0 +1,47 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: payment-service
+  profiles:
+    active: local
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  task:
+    scheduling:
+      pool:
+        size: 5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,scheduledtasks
+  endpoint:
+    health:
+      show-details: always
+
+# Payment processing configuration
+payment:
+  processing:
+    scheduled-delay: 60000 # 1 minute for demo purposes
+    batch-size: 10
+
+# External service configuration
+external-services:
+  order-service:
+    base-url: http://localhost:8080
+    timeout: 5000
+    max-retries: 3
+
+logging:
+  level:
+    com.orderfulfillment.paymentservice: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.scheduling: DEBUG
