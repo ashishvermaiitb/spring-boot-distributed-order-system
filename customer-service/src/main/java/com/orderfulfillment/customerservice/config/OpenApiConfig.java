@@ -7,24 +7,33 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
 
     @Bean
     public OpenAPI customerServiceOpenAPI() {
+        Server localServer = new Server()
+                .url("http://localhost:8081")
+                .description("Local Development Server");
+
+        Server dockerServer = new Server()
+                .url("http://customer-service:8081")
+                .description("Docker Environment");
+
+        Contact contact = new Contact()
+                .name("Order Fulfillment Team")
+                .email("support@orderfulfillment.com");
+
+        Info info = new Info()
+                .title("Customer Service API")
+                .version("v1.0")
+                .description("Customer Service for Distributed Order Fulfillment System - Manages customer data, validation, and provides customer information to other services")
+                .contact(contact);
+
         return new OpenAPI()
-                .info(new Info()
-                        .title("Customer Service API")
-                        .description("REST API for Customer Service in Distributed Order Fulfillment System")
-                        .version("1.0.0")
-                        .contact(new Contact()
-                                .name("Order Fulfillment Team")
-                                .email("support@orderfulfillment.com")))
-                .servers(Arrays.asList(
-                        new Server().url("http://localhost:8081").description("Local Development Server"),
-                        new Server().url("http://customer-service:8081").description("Docker Environment")
-                ));
+                .info(info)
+                .servers(List.of(localServer, dockerServer));
     }
 }
