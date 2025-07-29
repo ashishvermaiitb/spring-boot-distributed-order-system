@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/payments")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", allowCredentials = "false", maxAge = 3600)
 @Tag(name = "Payment Management", description = "APIs for managing payments")
 public class PaymentController {
 

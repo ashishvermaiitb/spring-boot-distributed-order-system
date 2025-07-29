@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/customers")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", allowCredentials = "false", maxAge = 3600)
 @Tag(name = "Customer Management", description = "APIs for managing customers")
 public class CustomerController {
 

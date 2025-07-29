@@ -22,7 +22,7 @@ spring:
       allowed-origins: "*"
       allowed-methods: "*"
       allowed-headers: "*"
-      allow-credentials: true
+      allow-credentials: false
 
 server:
   port: ${PORT:8082}
