@@ -14,13 +14,13 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI paymentServiceOpenAPI() {
+        Server currentServer = new Server()
+                .url("/") // Use relative URL - this will use current domain
+                .description("Current Environment");
+
         Server localServer = new Server()
                 .url("http://localhost:8082")
                 .description("Local Development Server");
-
-        Server dockerServer = new Server()
-                .url("http://payment-service:8082")
-                .description("Docker Environment");
 
         Contact contact = new Contact()
                 .name("Order Fulfillment Team")
@@ -34,6 +34,6 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .info(info)
-                .servers(List.of(localServer, dockerServer));
+                .servers(List.of(currentServer, localServer)); // Relative URL first
     }
 }
