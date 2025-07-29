@@ -17,6 +17,13 @@ spring:
       ddl-auto: update
     database-platform: ${DATABASE_PLATFORM:org.hibernate.dialect.H2Dialect}
 
+  web:
+    cors:
+      allowed-origins: "*"
+      allowed-methods: "*"
+      allowed-headers: "*"
+      allow-credentials: true
+
 server:
   port: ${PORT:8082}
 

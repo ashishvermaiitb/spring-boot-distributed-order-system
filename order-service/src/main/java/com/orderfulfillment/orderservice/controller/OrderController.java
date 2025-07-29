@@ -23,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/orders")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Order Management", description = "APIs for managing orders and orchestrating the fulfillment process")
 public class OrderController {
 
