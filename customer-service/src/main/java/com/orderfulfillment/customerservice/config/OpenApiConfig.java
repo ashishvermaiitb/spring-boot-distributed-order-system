@@ -18,9 +18,9 @@ public class OpenApiConfig {
                 .url("http://localhost:8081")
                 .description("Local Development Server");
 
-        Server dockerServer = new Server()
-                .url("http://customer-service:8081")
-                .description("Docker Environment");
+        Server railwayServer = new Server()
+                .url("https://customer-service1.up.railway.app")
+                .description("Railway Production Environment");
 
         Contact contact = new Contact()
                 .name("Order Fulfillment Team")
@@ -34,6 +34,6 @@ public class OpenApiConfig {
 
         return new OpenAPI()
                 .info(info)
-                .servers(List.of(localServer, dockerServer));
+                .servers(List.of(railwayServer, localServer)); // Railway first for production
     }
 }
