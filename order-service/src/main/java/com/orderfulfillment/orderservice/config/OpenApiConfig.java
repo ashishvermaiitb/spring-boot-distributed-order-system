@@ -14,13 +14,13 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI orderServiceOpenAPI() {
+        Server railwayServer = new Server()
+                .url("https://order-service.up.railway.app") //or can use in the way used in customer service
+                .description("Railway Production");
+
         Server localServer = new Server()
                 .url("http://localhost:8080")
-                .description("Local Development Server");
-
-        Server dockerServer = new Server()
-                .url("http://order-service:8080")
-                .description("Docker Environment");
+                .description("Local Development");
 
         Contact contact = new Contact()
                 .name("Order Fulfillment Team")
@@ -29,11 +29,11 @@ public class OpenApiConfig {
         Info info = new Info()
                 .title("Order Service API")
                 .version("v1.0")
-                .description("Order Service for Distributed Order Fulfillment System - Orchestrates the entire order fulfillment process including customer validation, payment processing, and order lifecycle management")
+                .description("Order Service for Distributed Order Fulfillment System")
                 .contact(contact);
 
         return new OpenAPI()
                 .info(info)
-                .servers(List.of(localServer, dockerServer));
+                .servers(List.of(railwayServer, localServer)); // Railway URL first as default
     }
 }
